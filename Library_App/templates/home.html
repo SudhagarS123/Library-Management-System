@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Management System</title>
+  <style>
+    /* Reset */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: "Poppins", Arial, sans-serif; background: #f4fff8; color: #333; }
+
+    /* ===== Navbar ===== */
+    nav {
+      background: linear-gradient(120deg, #00b894, #0984e3);
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 25px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    nav ul li a {
+      position: relative;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      padding-bottom: 3px;
+      transition: color 0.3s ease;
+    }
+
+    /* Underline hover animation */
+    nav ul li a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      height: 2px;
+      width: 0;
+      background: #fff;
+      transition: width 0.3s ease;
+    }
+
+    nav ul li a:hover::after,
+    nav ul li a.active::after {
+      width: 100%;
+    }
+
+    /* Login button */
+    .login-btn {
+      background: #fff;
+      color: #0984e3;
+      padding: 8px 18px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: #d0fff0;
+      transform: translateY(-2px);
+    }
+
+    /* Mobile Menu */
+    #menu-toggle { display: none; }
+    .menu-icon {
+      display: none;
+      font-size: 1.8rem;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      nav ul {
+        display: none;
+        flex-direction: column;
+        background: #0984e3;
+        width: 100%;
+        position: absolute;
+        top: 55px;
+        left: 0;
+        padding: 20px 0;
+      }
+
+      #menu-toggle:checked + .menu-icon + ul {
+        display: flex;
+      }
+
+      .menu-icon { display: block; }
+      .login-btn { margin-top: 10px; }
+    }
+
+    /* ===== Hero Section ===== */
+    header {
+      background: linear-gradient(135deg, #55efc4, #00cec9);
+      color: #fff;
+      text-align: center;
+      padding: 90px 20px;
+      border-radius: 0 0 40px 40px;
+    }
+    header h2 { font-size: 2.6rem; margin-bottom: 12px; }
+    header p { font-size: 1.1rem; margin-bottom: 25px; }
+    header a {
+      background: white;
+      color: #00b894;
+      padding: 10px 25px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    header a:hover { background: #d0fff0; }
+
+    /* ===== Features ===== */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      padding: 60px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+    }
+
+    .card h3 { margin-bottom: 12px; color: #0984e3; }
+    .card p { margin-bottom: 15px; color: #555; }
+    .card a {
+      display: inline-block;
+      background: #00b894;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+    .card a:hover { background: #0984e3; }
+
+    /* ===== Footer ===== */
+    footer {
+      background: #0984e3;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: 40px;
+      border-radius: 20px 20px 0 0;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <h1>📚 My Library</h1>
+    <input type="checkbox" id="menu-toggle">
+    <label for="menu-toggle" class="menu-icon">☰</label>
+    <ul>
+      <li><a href="/" class="active">Home</a></li>
+      <li><a href="{% url 'book_view' %}">Books</a></li>
+      <li><a href="{% url 'student_register'%}">Students</a></li>
+      <li><a href="{% url 'issued_books'%}">Issue Book</a></li>
+      <li><a href="{% url 'student_login' %}" class="login-btn">Login</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <header>
+    <h2>Welcome to the Library</h2>
+    <p>Manage Books, Students, and Issue Records Easily</p>
+    <a href="{% url 'book_view' %}">Get Started</a>
+  </header>
+
+  <!-- Features -->
+  <section class="features">
+    <div class="card">
+      <h3>📖 Books</h3>
+      <p>View, add, and manage all available books in the library.</p>
+      <a href="{% url 'book_view' %}">Manage Books</a>
+    </div>
+    <div class="card">
+      <h3>👩‍🎓 Students</h3>
+      <p>Register and manage student records seamlessly.</p>
+      <a href="{% url 'student_register'%}">Manage Students</a>
+    </div>
+    <div class="card">
+      <h3>📅 Issue Books</h3>
+      <p>Track issued books, return dates, and overdue fines.</p>
+      <a href="{% url 'issued_books'%}">Issue a Book</a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <!-- <footer>
+    <p>© 2025 Library Management System | Built with Django</p>
+  </footer> -->
+
+</body>
+</html>

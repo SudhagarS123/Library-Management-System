@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library - Books</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f4f4f9;
+    }
+
+    /* Header (Navbar) */
+    header {
+      background: #2c7be5;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    /* Navigation Buttons */
+    .nav-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      background: #1a5bb8;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: 0.3s ease;
+    }
+
+    .nav-links a:hover {
+      background: #114a96;
+    }
+
+    /* Mobile Menu Button */
+    .menu-toggle {
+      display: none;
+      flex-direction: column;
+      cursor: pointer;
+    }
+
+    .menu-toggle span {
+      background: #fff;
+      height: 3px;
+      width: 25px;
+      margin: 4px 0;
+      border-radius: 2px;
+      transition: 0.3s;
+    }
+
+    /* Responsive Navbar */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 60px;
+        right: 20px;
+        background: #2c7be5;
+        flex-direction: column;
+        width: 160px;
+        border-radius: 8px;
+        text-align: right;
+        padding: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+    }
+
+    /* Search Section */
+    .search-bar {
+      text-align: center;
+      margin: 20px auto;
+      padding: 10px;
+    }
+
+    .search-bar form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-bar input[type="text"] {
+      width: 280px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+    }
+
+    .search-bar button {
+      padding: 10px 16px;
+      background-color: #2c7be5;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .search-bar button:hover {
+      background-color: #1a5bb8;
+    }
+
+    /* Container with 3 columns */
+    .container {
+      padding: 30px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    h3 {
+      color: #2c7be5;
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    p {
+      margin-bottom: 8px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 14px;
+      background: #2c7be5;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #1a5bb8;
+    }
+
+    .btn-warning {
+      background: #ff9800;
+    }
+
+    .btn-warning:hover {
+      background: #e68900;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Responsive Navbar -->
+  <header>
+    <div class="logo">📚 Library Book Collection</div>
+
+    <div class="menu-toggle" id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav class="nav-links" id="nav-links">
+      <a href="/">🏠 Home</a>
+      <a href="{% url 'student_login' %}">🔐 Login</a>
+      <a href="{% url 'issued_books' %}">📘 Issue</a>
+    </nav>
+  </header>
+
+  <!-- 🔍 Search Bar -->
+  <div class="search-bar">
+    <form method="get" action="{% url 'book_view' %}">
+      <input type="text" name="q" placeholder="Search by Book Title or Author..." value="{{ query|default:'' }}">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
+  <!-- Book Display Section -->
+  <div class="container">
+    {% for i in data %}
+      <div class="card">
+        <h3>{{ i.title }}</h3>
+        <p><strong>Author:</strong> {{ i.author }}</p>
+        <p><strong>Department:</strong> {{ i.department }}</p>
+        <p>
+          <strong>Status:</strong>
+          {% if i.available %}
+            <span style="color:green;">Available ✅</span>
+          {% else %}
+            <span style="color:red;">Borrowed ❌</span>
+          {% endif %}
+        </p>
+
+        {% if i.available %}
+          <a href="{% url 'borrow_book' i.id %}" class="btn borrow-btn">Borrow</a>
+        {% else %}
+          <a href="{% url 'return_book' i.id %}" class="btn btn-warning return-btn">Return</a>
+        {% endif %}
+      </div>
+    {% empty %}
+      <p style="text-align:center; grid-column:1 / -1; color:#888;">No books found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- Small Script for Menu Toggle and Confirmation -->
+  <script>
+    const menuToggle = document.getElementById('menu-toggle');
+    const navLinks = document.getElementById('nav-links');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      menuToggle.classList.toggle('open');
+    });
+
+    // Confirmation popup for Borrow / Return
+    document.querySelectorAll('.borrow-btn').forEach(btn => {
+      btn.addEventListener('click', function (event) {
+        const confirmBorrow = confirm("Are you sure you want to borrow this book?");
+        if (!confirmBorrow) event.preventDefault();
+      });
+    });
+
+    document.querySelectorAll('.return-btn').forEach(btn => {
+      btn.addEventListener('click', function (event) {
+        const confirmReturn = confirm("Are you sure you want to return this book?");
+        if (!confirmReturn) event.preventDefault();
+      });
+    });
+  </script>
+</body>
+</html>

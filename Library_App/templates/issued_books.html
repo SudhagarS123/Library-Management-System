@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Issued Books</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f4f9;
+      margin: 0;
+    }
+
+    header {
+      background: #2c7be5;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 30px;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .student-info {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #2c7be5;
+      color: #fff;
+    }
+
+    tr:hover {
+      background: #f9f9f9;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 6px 10px;
+      background: #2c7be5;
+      color: #fff;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 13px;
+    }
+
+    .btn:hover {
+      background: #1a5bb8;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #222;
+      color: #ddd;
+      font-size: 13px;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <header>📚 Issued Books</header>
+
+  <div class="container">
+    <div class="student-info">
+      <h2>Student: {{ student.name }}</h2>
+      <p><strong>Roll Number:</strong> {{ student.roll_number }}</p>
+      <p><strong>Department:</strong> {{ student.department }}</p>
+      <a href="{% url 'book_view' %}" class="btn">Back to Books</a>
+    </div>
+
+    {% if issues %}
+      <table>
+        <thead>
+          <tr>
+            <th>Book Title</th>
+            <th>Author</th>
+            <th>Borrow Date</th>
+            <th>Borrow Time</th>
+            <th>Return Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for issue in issues %}
+            <tr>
+              <td>{{ issue.book.title }}</td>
+              <td>{{ issue.book.author }}</td>
+              <td>{{ issue.borrow_date|date:"Y-m-d" }}</td>
+              <td>{{ issue.borrow_date|time:"H:i:s" }}</td>
+              <td>
+                {% if issue.return_date %}
+                  {{ issue.return_date|date:"Y-m-d" }}
+                {% else %}
+                  -
+                {% endif %}
+              </td>
+              <!-- <td>
+                {% if issue.return_date %}
+                  {{ issue.return_date|time:"H:i:s" }}
+                {% else %}
+                  -
+                {% endif %}
+              </td> -->
+              <td>
+                {% if issue.returned %}
+                  ✅ Returned
+                {% else %}
+                  🔴 Borrowed
+                {% endif %}
+              </td>
+              <td>
+                {% if not issue.returned %}
+                  <a href="{% url 'return_book' issue.book.id %}" class="btn">Return</a>
+                {% else %}
+                  <span style="color:gray;">No Action</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p style="text-align:center; color:#888;">No books have been issued yet.</p>
+    {% endif %}
+  </div>
+
+  <footer>&copy; {{ now|date:"Y" }} Library Management System | Designed by Sudhagar</footer>
+</body>
+</html>
